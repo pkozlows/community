@@ -1,5 +1,7 @@
 from talon import Context, Module, actions, settings
 
+from ..tags.operators import Operators
+
 ctx = Context()
 mod = Module()
 ctx.matches = r"""
@@ -40,98 +42,56 @@ ctx.lists["user.code_type"] = {
     "unit": "Unit",
 }
 
+operators = Operators(
+    # code_operators_array
+    SUBSCRIPT=lambda: actions.user.insert_between("[", "]"),
+    # code_operators_assignment
+    ASSIGNMENT=" = ",
+    ASSIGNMENT_ADDITION=" += ",
+    ASSIGNMENT_SUBTRACTION=" -= ",
+    ASSIGNMENT_MULTIPLICATION=" *= ",
+    ASSIGNMENT_DIVISION=" /= ",
+    ASSIGNMENT_MODULO=" %= ",
+    ASSIGNMENT_INCREMENT="++",
+    ASSIGNMENT_BITWISE_LEFT_SHIFT=" <<= ",
+    ASSIGNMENT_BITWISE_RIGHT_SHIFT=" >>= ",
+    # code_operators_bitwise
+    BITWISE_AND=" & ",
+    BITWISE_OR=" | ",
+    BITWISE_EXCLUSIVE_OR=" ^ ",
+    BITWISE_LEFT_SHIFT=" << ",
+    BITWISE_RIGHT_SHIFT=" >> ",
+    # code_operators_lambda
+    LAMBDA=" -> ",
+    # code_operators_bitwise
+    MATH_SUBTRACT=" - ",
+    MATH_ADD=" + ",
+    MATH_MULTIPLY=" * ",
+    MATH_DIVIDE=" / ",
+    MATH_MODULO=" % ",
+    MATH_EXPONENT=" ^ ",
+    MATH_EQUAL=" == ",
+    MATH_NOT_EQUAL=" != ",
+    MATH_GREATER_THAN=" > ",
+    MATH_GREATER_THAN_OR_EQUAL=" >= ",
+    MATH_LESS_THAN=" < ",
+    MATH_LESS_THAN_OR_EQUAL=" <= ",
+    MATH_AND=" && ",
+    MATH_OR=" || ",
+    MATH_NOT="!",
+)
+
 
 @ctx.action_class("user")
 class UserActions:
+    def code_get_operators() -> Operators:
+        return operators
+
     def code_comment_line_prefix():
-        actions.insert("// ")
+        actions.user.insert_snippet_by_name("commentLine")
 
-    def code_operator_lambda():
-        actions.auto_insert(" -> ")
-
-    def code_operator_subscript():
-        actions.user.insert_between("[", "]")
-
-    def code_operator_assignment():
-        actions.auto_insert(" = ")
-
-    def code_operator_subtraction():
-        actions.auto_insert(" - ")
-
-    def code_operator_subtraction_assignment():
-        actions.auto_insert(" -= ")
-
-    def code_operator_addition():
-        actions.auto_insert(" + ")
-
-    def code_operator_addition_assignment():
-        actions.auto_insert(" += ")
-
-    def code_operator_multiplication():
-        actions.auto_insert(" * ")
-
-    def code_operator_multiplication_assignment():
-        actions.auto_insert(" *= ")
-
-    def code_operator_exponent():
-        actions.auto_insert(" ^ ")
-
-    def code_operator_division():
-        actions.auto_insert(" / ")
-
-    def code_operator_division_assignment():
-        actions.auto_insert(" /= ")
-
-    def code_operator_modulo():
-        actions.auto_insert(" % ")
-
-    def code_operator_modulo_assignment():
-        actions.auto_insert(" %= ")
-
-    def code_operator_equal():
-        actions.auto_insert(" == ")
-
-    def code_operator_not_equal():
-        actions.auto_insert(" != ")
-
-    def code_operator_greater_than():
-        actions.auto_insert(" > ")
-
-    def code_operator_greater_than_or_equal_to():
-        actions.auto_insert(" >= ")
-
-    def code_operator_less_than():
-        actions.auto_insert(" < ")
-
-    def code_operator_less_than_or_equal_to():
-        actions.auto_insert(" <= ")
-
-    def code_operator_and():
-        actions.auto_insert(" && ")
-
-    def code_operator_or():
-        actions.auto_insert(" || ")
-
-    def code_operator_bitwise_and():
-        actions.auto_insert(" & ")
-
-    def code_operator_bitwise_or():
-        actions.auto_insert(" | ")
-
-    def code_operator_bitwise_exclusive_or():
-        actions.auto_insert(" ^ ")
-
-    def code_operator_bitwise_left_shift():
-        actions.auto_insert(" << ")
-
-    def code_operator_bitwise_left_shift_assignment():
-        actions.auto_insert(" <<= ")
-
-    def code_operator_bitwise_right_shift():
-        actions.auto_insert(" >> ")
-
-    def code_operator_bitwise_right_shift_assignment():
-        actions.auto_insert(" >>= ")
+    def code_comment_block():
+        actions.user.insert_snippet_by_name("commentBlock")
 
     def code_self():
         actions.auto_insert("this")
@@ -146,30 +106,29 @@ class UserActions:
         actions.insert(" != null")
 
     def code_state_if():
-        actions.user.insert_between("if (", ") ")
+        actions.user.insert_snippet_by_name("ifStatement")
 
     def code_state_else_if():
-        actions.user.insert_between("else if (", ") ")
+        actions.user.insert_snippet_by_name("elseIfStatement")
 
     def code_state_else():
-        actions.user.insert_between("else {", "}")
-        actions.key("enter")
+        actions.user.insert_snippet_by_name("elseStatement")
 
     def code_state_switch():
-        actions.user.insert_between("when (", ") ")  # Kotlin uses 'when' for switch
+        actions.user.insert_snippet_by_name("switchStatement")
 
     def code_state_case():
         actions.insert("case \nbreak;")
         actions.edit.up()
 
     def code_state_for():
-        actions.user.insert_between("for (", ") ")
+        actions.user.insert_snippet_by_name("forEachStatement")
 
     def code_state_while():
-        actions.user.insert_between("while (", ") ")
+        actions.user.insert_snippet_by_name("whileLoopStatement")
 
     def code_define_class():
-        actions.auto_insert("class ")
+        actions.user.insert_snippet_by_name("classDeclaration")
 
     def code_state_return():
         actions.insert("return ")
