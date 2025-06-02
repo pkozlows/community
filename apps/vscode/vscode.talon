@@ -12,10 +12,16 @@ window reload: user.vscode("workbench.action.reloadWindow")
 window close: user.vscode("workbench.action.closeWindow")
 #multiple_cursor.py support end
 
-go view [<user.text>]:
-    user.vscode("workbench.action.openView")
+please [<user.text>]:
+    user.vscode("workbench.action.showCommands")
     insert(user.text or "")
 
+# Find session
+pop sesh {user.vscode_sessions}$:
+    user.vscode_find_recent(vscode_sessions)
+    sleep(150ms)
+    key(enter)
+ 
 # Sidebar
 bar explore: user.vscode("workbench.view.explorer")
 bar extensions: user.vscode("workbench.view.extensions")
@@ -56,10 +62,6 @@ show shortcuts: user.vscode("workbench.action.openGlobalKeybindings")
 show shortcuts json: user.vscode("workbench.action.openGlobalKeybindingsFile")
 show snippets: user.vscode("workbench.action.openSnippets")
 
-# VSCode Snippets
-snip (last | previous): user.vscode("jumpToPrevSnippetPlaceholder")
-snip next: user.vscode("jumpToNextSnippetPlaceholder")
-
 # Display
 centered switch: user.vscode("workbench.action.toggleCenteredLayout")
 fullscreen switch: user.vscode("workbench.action.toggleFullScreen")
@@ -67,36 +69,36 @@ theme switch: user.vscode("workbench.action.selectTheme")
 wrap switch: user.vscode("editor.action.toggleWordWrap")
 zen switch: user.vscode("workbench.action.toggleZenMode")
 
-# File Commands
-file hunt [<user.text>]:
+# dock Commands
+dock hunt [<user.text>]:
     user.vscode("workbench.action.quickOpen")
     sleep(50ms)
     insert(text or "")
-file hunt (pace | paste):
+dock hunt (pace | paste):
     user.vscode("workbench.action.quickOpen")
     sleep(50ms)
     edit.paste()
-file copy name: user.vscode("fileutils.copyFileName")
-file copy path: user.vscode("copyFilePath")
-file copy local [path]: user.vscode("copyRelativeFilePath")
-file create sibling: user.vscode_and_wait("explorer.newFile")
-file create: user.vscode("workbench.action.files.newUntitledFile")
-file create relative: user.vscode("fileutils.newFile")
-file create root: user.vscode("fileutils.newFileAtRoot")
-file rename:
+dock copy name: user.vscode("fileutils.copyFileName")
+dock copy path: user.vscode("copyFilePath")
+dock copy local [path]: user.vscode("copyRelativeFilePath")
+dock make sib: user.vscode_and_wait("explorer.newFile")
+# dock create: user.vscode("workbench.action.files.newUntitledFile")
+dock create relative: user.vscode("fileutil.newFile")
+dock create root: user.vscode("fileutils.newFileAtRoot")
+dock rename:
     user.vscode("fileutils.renameFile")
     sleep(150ms)
-file move:
+dock move:
     user.vscode("fileutils.moveFile")
     sleep(150ms)
-file clone:
+dock clone:
     user.vscode("fileutils.duplicateFile")
     sleep(150ms)
-file delete:
+dock delete:
     user.vscode("fileutils.removeFile")
     sleep(150ms)
-file open folder: user.vscode("revealFileInOS")
-file reveal: user.vscode("workbench.files.action.showActiveFileInExplorer")
+dock open folder: user.vscode("revealFileInOS")
+dock reveal: user.vscode("workbench.files.action.showActiveFileInExplorer")
 save ugly: user.vscode("workbench.action.files.saveWithoutFormatting")
 
 # Language Features
@@ -176,6 +178,12 @@ git commit [<user.text>]:
     user.vscode("git.commitStaged")
     sleep(100ms)
     user.insert_formatted(text or "", "CAPITALIZE_FIRST_WORD")
+git commit <user.prose> close:
+    user.git_commit(prose or "")
+    edit.save()
+    sleep(150ms)
+    app.tab_close()
+    sleep(250ms)
 git commit undo: user.vscode("git.undoCommit")
 git commit amend: user.vscode("git.commitStagedAmend")
 git diff: user.vscode("git.openChange")
@@ -224,7 +232,6 @@ break point: user.vscode("editor.debug.action.toggleBreakpoint")
 step over: user.vscode("workbench.action.debug.stepOver")
 debug step into: user.vscode("workbench.action.debug.stepInto")
 debug step out [of]: user.vscode("workbench.action.debug.stepOut")
-debug start: user.vscode("workbench.action.debug.start")
 debug pause: user.vscode("workbench.action.debug.pause")
 debug stopper: user.vscode("workbench.action.debug.stop")
 debug continue: user.vscode("workbench.action.debug.continue")
@@ -235,19 +242,13 @@ debug clean: user.vscode("workbench.debug.panel.action.clearReplAction")
 # Terminal
 terminal external: user.vscode("workbench.action.terminal.openNativeConsole")
 terminal new: user.vscode("workbench.action.terminal.new")
-terminal next: user.vscode("workbench.action.terminal.focusNext")
-terminal last: user.vscode("workbench.action.terminal.focusPrevious")
-terminal split: user.vscode("workbench.action.terminal.split")
-terminal zoom: user.vscode("workbench.action.toggleMaximizedPanel")
+terminal zoom: user.vscode("workbench.action.terminal.moveToEditor")
 terminal trash: user.vscode("workbench.action.terminal.kill")
 terminal toggle: user.vscode_and_wait("workbench.action.terminal.toggleTerminal")
 terminal scroll up: user.vscode("workbench.action.terminal.scrollUp")
 terminal scroll down: user.vscode("workbench.action.terminal.scrollDown")
 terminal <number_small>: user.vscode_terminal(number_small)
 
-task run [<user.text>]:
-    user.vscode("workbench.action.tasks.runTask")
-    insert(user.text or "")
 #TODO: should this be added to linecommands?
 copy line down: user.vscode("editor.action.copyLinesDownAction")
 copy line up: user.vscode("editor.action.copyLinesUpAction")
@@ -275,7 +276,6 @@ join lines: user.vscode("editor.action.joinLines")
 full screen: user.vscode("workbench.action.toggleFullScreen")
 
 curse undo: user.vscode("cursorUndo")
-curse redo: user.vscode("cursorRedo")
 
 select word: user.vscode("editor.action.addSelectionToNextFindMatch")
 skip word: user.vscode("editor.action.moveSelectionToNextFindMatch")
@@ -286,5 +286,25 @@ cell last: user.vscode("notebook.focusPreviousEditor")
 cell run above: user.vscode("notebook.cell.executeCellsAbove")
 cell run: user.vscode("notebook.cell.execute")
 
+test cell: user.vscode("jupyter.runAndDebugCell")
+
 install local: user.vscode("workbench.extensions.action.installVSIX")
 preview markdown: user.vscode("markdown.showPreview")
+
+#personal
+test dock: user.vscode("workbench.action.debug.start")
+next one: user.vscode_and_wait("jumpToNextSnippetPlaceholder")
+snip last: user.vscode("jumpToPrevSnippetPlaceholder")
+latex recipe: user.vscode("latex-workshop.recipes")
+build latex {user.latex_recipes}:
+    user.vscode("latex-workshop.recipes")
+    insert(latex_recipes)
+    key(enter)
+test test: user.vscode_with_plugin("workbench.action.tasks.runTask", "testPBCTest")
+make test:
+    x = win.file_name
+    # remove the extension
+    x = x.rsplit(".",1)[0]
+    user.vscode("workbench.action.terminal.focus")
+    insert(f"make -j32 pbc_{x}")
+    key(enter)

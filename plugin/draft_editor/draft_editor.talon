@@ -1,23 +1,24 @@
 tag: user.draft_editor_app_running
-and not tag: user.draft_editor_app_focused
+and not tag: user.drafcd $GW
+t_editor_app_focused
 -
 
-draft this: user.draft_editor_open()
+rack this: user.draft_editor_open()
 
-draft all:
+rack all:
     edit.select_all()
     user.draft_editor_open()
 
-draft line:
+rack line:
     edit.select_line()
     user.draft_editor_open()
 
-draft top:
+rack top:
     edit.extend_file_start()
     user.draft_editor_open()
 
-draft bottom:
+rack bottom:
     edit.extend_file_end()
     user.draft_editor_open()
 
-draft submit: user.draft_editor_paste_last()
+rack submit this: user.draft_editor_paste_last()

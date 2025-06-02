@@ -1,0 +1,16 @@
+list: user.system_paths
+hostname: dhcp-10-250-229-228.harvard.edu
+-
+user: /Users/patrykkozlowski
+desktop: /Users/patrykkozlowski/Desktop
+desk: /Users/patrykkozlowski/Desktop
+documents: /Users/patrykkozlowski/Documents
+docks: /Users/patrykkozlowski/Documents
+downloads: /Users/patrykkozlowski/Downloads
+music: /Users/patrykkozlowski/Music
+pictures: /Users/patrykkozlowski/Pictures
+videos: /Users/patrykkozlowski/Videos
+talon home: /Users/patrykkozlowski/.talon
+talon recordings: /Users/patrykkozlowski/.talon/recordings
+talon user: /Users/patrykkozlowski/.talon/user
+home: /Users/patrykkozlowski
